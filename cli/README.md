@@ -1,4 +1,4 @@
-# Piraeus client scripts
+# CLI scripts
 ## Installation
 On a kubernetes node where `kubectl` works, usually the master node
 ```
