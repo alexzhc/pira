@@ -16,11 +16,11 @@ Now, test it by running
 $ linstor node list
 ```
 
-## CLI outside of kubernetes nodes
+## CLI on non-k8s nodes
 
 ### Configure controller address
 
-For client to work on non-k8s nodes, it must be pointed to piraeus-controller's REST API address, either by environment variable `LS_CONTROLLERS` or configuration file `/etc/linstor/linstor-client.conf`. Multiple addresses are supported for failover purpose.
+For linstor-cli to work locally, it must be pointed to piraeus-controller's REST API address, either by environment variable `LS_CONTROLLERS` or configuration file `/etc/linstor/linstor-client.conf`. Multiple addresses are supported for failover purpose.
 
 For example
 ```
