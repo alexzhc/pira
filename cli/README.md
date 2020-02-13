@@ -1,4 +1,7 @@
 # CLI scripts
+## Overview
+Piraeus provides Linstor CLI in both piraeus-server and piraeus-client images: the former for deployment; the latter for standalone usage. 
+
 ## Installation
 On a kubernetes node where `kubectl` works, usually a master node
 ```
@@ -14,7 +17,7 @@ $ linstor node list
 >kubectl -n kube-system exec piraeus-controller-0 -- linstor $@
 >```
 
-## Run client outside of kubernetes nodes
+## CLI outside of kubernetes nodes
 
 ### Configure controller address
 
