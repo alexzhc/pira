@@ -1,25 +1,31 @@
 #!/bin/sh
-# this method is experimental
-IMG=daocloud.io/piraeus/piraeus-client:latest.runc
 : ${CLIENT_DIR:=/opt/piraeus/client}
 
-if [ "$1" = "--do-install" ] || [ "$1" = "--do-upgrade" ]; then
-    [ -z $2 ] || IMG=$2
-    echo "* Extracting image \"${IMG}\" to ${CLIENT_DIR}/oci/rootfs"
+_runc_run() {
+    echo "LS_CONTROLLERS=${LS_CONTROLLERS} $@" \
+        | runc run -b ${CLIENT_DIR}/oci $( uuidgen ) 
+}
+
+_create_oci() {
+    echo "* Installing image \"${IMG}\" to ${CLIENT_DIR}/oci/rootfs"
     rm -fr ${CLIENT_DIR}/oci
     mkdir -vp ${CLIENT_DIR}/oci/rootfs
     cd ${CLIENT_DIR}/oci
-    docker export $( docker create --rm ${IMG} ) \
+    docker export $( docker create --rm ${IMG:=daocloud.io/piraeus/piraeus-client:latest.runc}  ) \
         | tar -xf - -C rootfs \
               --checkpoint=400 --checkpoint-action=exec='printf "\b=>"'
     echo -e "\b]]"
-    mv -vf rootfs/runc ./
-    mv -vf rootfs/config.json.template ./
-else
-    cd ${CLIENT_DIR}/oci
-    CMD=$( echo \"linstor\",\"--no-utf8\",\"$@\" | sed 's/ /","/g' )
-    cat config.json.template \
-        | sed "s/_COMMAND_/${CMD}/; s#LS_CONTROLLERS=#&${LS_CONTROLLERS}#" \
-        > config.json
-    runc run $( uuidgen )
+    mv -vf rootfs/runc/* .
+    echo "* Linstor client version:"
+    _runc_run linstor -v
+}
+
+if [ "$1" = "--do-install" ]; then
+    _create_oci
+elif _runc_run linstor --no-utf8 $@; then
+    exit 0
+elif [ $? = '1' ]; then
+    _create_oci
+    _runc_run linstor --no-utf8 $@
+    echo "* Next run will be much faster"
 fi
