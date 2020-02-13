@@ -5,19 +5,14 @@ Piraeus provides Linstor CLI in both piraeus-server and piraeus-client images: t
 ## Installation
 On a kubernetes node where `kubectl` works, usually a master node
 ```
-$ curl -LO https://raw.githubusercontent.com/alexzhc/piraeus-app/master/cli/linstor.kube.sh
+$ echo kubectl -n kube-system exec piraeus-controller-0 -- linstor \$@ > /usr/local/bin/linstor
 
-$ install linstor.kube.sh /usr/local/bin/linstor
+$ chmod +x /usr/local/bin/linstor
 ```
 Now, test it by running
 ```
 $ linstor node list
 ```
-
-> This script is simply:
->```
->kubectl -n kube-system exec piraeus-controller-0 -- linstor $@
->```
 
 ## CLI outside of kubernetes nodes
 
