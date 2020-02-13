@@ -24,7 +24,7 @@ elif _docker_exec linstor --no-utf8 $@; then
     exit 0
 elif [ $? = '1' ]; then
     _docker_run_d
-    _docker_exec linstor --no-utf8 $@ 
+    _docker_exec linstor --no-utf8 $@
     echo "* Next run will be much faster"
 fi
 

@@ -19,7 +19,7 @@ kubectl -n kube-system exec piraeus-controller-0 -- linstor $@
 
 ### Configure controller address
 
-For client to work on non-k8s nodes, it must be pointed to piraeus-controller's REST API address, either by environment variable `LS_CONTROLLERS` or configuration file `/etc/linstor/linstor-client.conf`. Multiple addresses are supported for failover purpose. 
+For client to work on non-k8s nodes, it must be pointed to piraeus-controller's REST API address, either by environment variable `LS_CONTROLLERS` or configuration file `/etc/linstor/linstor-client.conf`. Multiple addresses are supported for failover purpose.
 
 For example
 ```
@@ -33,17 +33,17 @@ controllers = 192.168.176.151:3370,192.168.176.152:3370,192.168.176.153:3370
 EOF
 ```
 
-### linstor.docker-run.sh 
+### linstor.docker-run.sh
 
 This script is simply:
 ```
-$ docker run 
+$ docker run
     -e LS_CONTROLLERS=${LS_CONTROLLERS} \
     -v /etc/linstor:/etc/linstor:ro \
     ${IMG:=quay.io/piraeusdatastore/piraeus-client} \
     $@
 ```
-However, `docker run` copies image each time when starting container, which makes the script very slow. 
+However, `docker run` copies image each time when starting container, which makes the script very slow.
 
 ### linstor.docker-exec.sh
 

@@ -3,7 +3,7 @@
 
 _runc_run() {
     echo "LS_CONTROLLERS=${LS_CONTROLLERS} $@" \
-        | runc run -b ${CLIENT_DIR}/oci $( uuidgen ) 
+        | runc run -b ${CLIENT_DIR}/oci $( uuidgen ）
 }
 
 _create_oci() {
