@@ -60,7 +60,7 @@ Test shows linstor.runc.sh is the fastest method, even faster than linstor.kube.
 Tested result by averaging 10 executions of `linstor node list`
 ```
 * linstor.runc.sh           0.32s
-* linstor.kube.sh           0.73s
+* linstor.kube.sh           0.49s
 * linstor.docker-exec.sh    0.66s
 * linstor.docker-run.sh     1.98s
 ```
