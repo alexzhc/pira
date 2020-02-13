@@ -57,7 +57,7 @@ This script utilizes RunC to run piraeus-client container. It extracts image by 
 Test shows linstor.runc.sh is the fastest method, even faster than linstor.kube.sh.
 
 | Method                 | Speed |
-| -----------------------|-------|
+| :----------------------|:------|
 | linstor.runc.sh        | 0.32s |
 | linstor.kube.sh        | 0.49s |
 | linstor.docker-exec.sh | 0.66s |
