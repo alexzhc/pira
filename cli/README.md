@@ -27,7 +27,7 @@ $ export LS_CONTROLLERS = 192.168.176.151:3370,192.168.176.152:3370,192.168.176.
 ```
 or
 ```
-$ cat <<EOF > /etc/linstor/linstor-client.conf
+$ cat > /etc/linstor/linstor-client.conf <<EOF
 [global]
 controllers = 192.168.176.151:3370,192.168.176.152:3370,192.168.176.153:3370
 EOF
