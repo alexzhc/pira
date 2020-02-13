@@ -1,6 +1,6 @@
 # CLI scripts
 ## Installation
-On a kubernetes node where `kubectl` works, usually the master node
+On a kubernetes node where `kubectl` works, usually a master node
 ```
 $ install cli/linstor.kube.sh /usr/local/bin/linstor
 ```
@@ -9,11 +9,10 @@ Now, test it by running
 $ linstor node list
 ```
 
-\* This script is simply:
-
-```
-kubectl -n kube-system exec piraeus-controller-0 -- linstor $@
-```
+> This script is simply:
+>```
+>kubectl -n kube-system exec piraeus-controller-0 -- linstor $@
+>```
 
 ## Run client outside of kubernetes nodes
 
