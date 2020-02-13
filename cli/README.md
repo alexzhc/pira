@@ -47,19 +47,20 @@ However, `docker run` extracts image each time when starting container, which ma
 
 ### linstor.docker-exec.sh
 
-This trick runs a piraeus-client container in the background and then run `docker exec` to access the client tool. It extracts image only when called for the first time, which help subsequent executions run much faster than by using `docker run`. 
+This trick runs a piraeus-client container in the background and then run `docker exec` to access the client tool. It extracts image only when called for the first time, which help subsequent executions run much faster than by using `docker run`.
 
 ### linstor.runc.sh
 
-This script utilizes RunC to run piraeus-client container. It extracts image by docker only when called for the first time. After that, docker does not involve in any execution.  
+This script utilizes RunC to run piraeus-client container. It extracts image by docker only when called for the first time. After that, docker does not involve in any execution.
 
 ## Speed test
 
-Test shows linstor.runc.sh is the fastest method, even faster than linstor.kube.sh. 
+Test shows linstor.runc.sh is the fastest method, even faster than linstor.kube.sh.
 
-Tested result by averaging 10 execution times.  
-
-* linstor.runc.sh           
-* linstor.kube.sh           
-* linstor.docker-exec.sh    
-* linstor.docker-run.sh     
+Tested result by averaging 10 executions of `linstor node list`
+```
+* linstor.runc.sh           0.32s
+* linstor.kube.sh           0.73s
+* linstor.docker-exec.sh    0.66s
+* linstor.docker-run.sh     1.98s
+```
