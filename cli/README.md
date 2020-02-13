@@ -43,11 +43,11 @@ $ docker run
     ${IMG:=quay.io/piraeusdatastore/piraeus-client} \
     $@
 ```
-However, `docker run` extracts image each time when starting container, which makes the script very slow. 
+However, `docker run` copies image each time when starting container, which makes the script very slow. 
 
 ### linstor.docker-exec.sh
 
-This trick runs a piraeus-client container in the background and then run `docker exec` to access the client tool. It extracts image only when called for the first time, which help subsequent executions run much faster than by using `docker run`.
+This trick runs a piraeus-client container in the background and then run `docker exec` to access the client tool. It copies image only when called for the first time, which help subsequent executions run much faster than by using `docker run`.
 
 ### linstor.runc.sh
 
