@@ -1,4 +1,5 @@
-# CLI scripts
+# Access CLI
+
 ## Overview
 Linstor CLI is available in both piraeus-server and piraeus-client images: the former for deployment; the latter for standalone usage. 
 
@@ -26,9 +27,11 @@ For example
 ```
 $ export LS_CONTROLLERS = 192.168.176.151:3370,192.168.176.152:3370,192.168.176.153:3370
 ```
+
 or
+
 ```
-$ cat > /etc/linstor/linstor-client.conf <<EOF
+$ cat > /etc/linstor/linstor-client.conf << 'EOF'
 [global]
 controllers = 192.168.176.151:3370,192.168.176.152:3370,192.168.176.153:3370
 EOF
@@ -38,20 +41,20 @@ EOF
 
 * linstor.docker-run.sh
 
-This script is simply a `docker run` command.
-However, `docker run` copies image each time when starting a container, which may add a couple seconds before actually executing linstor-cli. 
+This script is a simple line of `docker run` command.
+However, `docker run` copies image each time when starting a container, which may add a couple of seconds before actually executing linstor-cli. 
 
 ### Method 2: docker exec
 
 * linstor.docker-exec.sh
 
-This trick runs a piraeus-client container in the background and then run `docker exec` to access the client tool. It copies image only when called for the first time, which help subsequent executions run much faster than by using `docker run`.
+This trick runs a piraeus-client container in the background and then run `docker exec` to access the cli tool. It only tcopies image when called for the first time, which help subsequent executions run much faster than by using `docker run`.
 
 ### Method 3: runc run
 
 * linstor.runc-run.sh
 
-This script utilizes RunC to run piraeus-client container. It extracts image by docker only when called for the first time. After that, docker does not involve in any execution.
+This script utilizes RunC to run piraeus-client container. It only extracts image by docker when called for the first time. After that, docker does not involve in any execution.
 
 ## Speed test
 
@@ -65,4 +68,4 @@ Test shows linstor.runc.sh is the fastest method, even faster than linstor.kube.
 | docker exec              | 0.66s |
 | docker run               | 1.98s |
 
->Result by averaging 10 executions of `linstor node list`
+> Result by averaging 10 executions of `linstor node list`
