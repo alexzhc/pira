@@ -1,12 +1,12 @@
 # CLI scripts
 ## Overview
-Piraeus provides Linstor CLI in both piraeus-server and piraeus-client images: the former for deployment; the latter for standalone usage. 
+Linstor CLI is available in both piraeus-server and piraeus-client images: the former for deployment; the latter for standalone usage. 
 
 ## Installation
 On a kubernetes node where `kubectl` works, usually a master node
 ```
-$ cat > /usr/local/bin/linstor <<EOF
-kubectl -n kube-system exec piraeus-controller-0 -- linstor \$@
+$ cat > /usr/local/bin/linstor << 'EOF'
+kubectl -n kube-system exec piraeus-controller-0 -- linstor $@
 EOF
 
 $ chmod +x /usr/local/bin/linstor
@@ -58,11 +58,12 @@ This script utilizes RunC to run piraeus-client container. It extracts image by 
 
 Test shows linstor.runc.sh is the fastest method, even faster than linstor.kube.sh.
 
-| Method                 | Speed |
-| :----------------------|:------|
-| linstor.runc.sh        | 0.32s |
-| linstor.kube.sh        | 0.49s |
-| linstor.docker-exec.sh | 0.66s |
-| linstor.docker-exec.sh | 1.98s |
+| Method                   | Speed |
+| :------------------------|:------|
+| # in controller pod       | 0.25s |
+| linstor.runc.sh          | 0.32s |
+| linstor.kube.sh          | 0.49s |
+| linstor.docker-exec.sh   | 0.66s |
+| linstor.docker-exec.sh   | 1.98s |
 
 >Result by averaging 10 executions of `linstor node list`
