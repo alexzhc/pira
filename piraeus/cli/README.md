@@ -27,7 +27,9 @@ For example
 ```
 $ export LS_CONTROLLERS = 192.168.176.151:3370,192.168.176.152:3370,192.168.176.153:3370
 ```
+
 or
+
 ```
 $ cat > /etc/linstor/linstor-client.conf << 'EOF'
 [global]
