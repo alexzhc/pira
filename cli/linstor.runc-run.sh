@@ -15,7 +15,7 @@ _create_oci() {
         | tar -xf - -C rootfs \
               --checkpoint=400 --checkpoint-action=exec='printf "\b=>"'
     echo -e "\b]]"
-    mv -vf rootfs/runc/* .
+    tar -zxvf rootfs/oci.tgz
     echo "* Linstor client version:"
     _runc_run linstor -v
 }
