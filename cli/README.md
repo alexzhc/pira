@@ -18,9 +18,9 @@ $ linstor node list
 
 ## CLI on non-k8s nodes
 
-### Configure controller address
+### Set controller address
 
-For linstor-cli to work locally, it must be pointed to piraeus-controller's REST API address, either by environment variable `LS_CONTROLLERS` or configuration file `/etc/linstor/linstor-client.conf`. Multiple addresses are supported for failover purpose.
+For linstor-cli to work locally, it must be pointed to piraeus-controller's REST API address, either by environmental variable `LS_CONTROLLERS` or configuration file `/etc/linstor/linstor-client.conf`. Multiple addresses are supported for failover purpose.
 
 For example
 ```
@@ -34,23 +34,22 @@ controllers = 192.168.176.151:3370,192.168.176.152:3370,192.168.176.153:3370
 EOF
 ```
 
-### linstor.docker-run.sh
+### Method 1: docker run
 
-This script is simply:
-```
-$ docker run
-    -e LS_CONTROLLERS=${LS_CONTROLLERS} \
-    -v /etc/linstor:/etc/linstor:ro \
-    ${IMG:=quay.io/piraeusdatastore/piraeus-client} \
-    $@
-```
-However, `docker run` copies image each time when starting container, which makes the script very slow.
+* linstor.docker-run.sh
 
-### linstor.docker-exec.sh
+This script is simply a `docker run` command.
+However, `docker run` copies image each time when starting a container, which may add a couple seconds before actually executing linstor-cli. 
+
+### Method 2: docker exec
+
+* linstor.docker-exec.sh
 
 This trick runs a piraeus-client container in the background and then run `docker exec` to access the client tool. It copies image only when called for the first time, which help subsequent executions run much faster than by using `docker run`.
 
-### linstor.runc.sh
+### Method 3: runc run
+
+* linstor.runc-run.sh
 
 This script utilizes RunC to run piraeus-client container. It extracts image by docker only when called for the first time. After that, docker does not involve in any execution.
 
@@ -60,10 +59,10 @@ Test shows linstor.runc.sh is the fastest method, even faster than linstor.kube.
 
 | Method                   | Speed |
 | :------------------------|:------|
-| # in controller pod       | 0.25s |
-| linstor.runc.sh          | 0.32s |
-| linstor.kube.sh          | 0.49s |
-| linstor.docker-exec.sh   | 0.66s |
-| linstor.docker-exec.sh   | 1.98s |
+| # in controller pod      | 0.25s |
+| runc run                 | 0.32s |
+| kubectl exec             | 0.49s |
+| docker exec              | 0.66s |
+| docker run               | 1.98s |
 
 >Result by averaging 10 executions of `linstor node list`
