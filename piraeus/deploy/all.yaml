@@ -72,7 +72,7 @@ spec:
       dnsPolicy: ClusterFirst
       initContainers:
       - name: init
-        image: quay.io/piraeusdatastore/piraeus-init:v0.5
+        image: quay.io/piraeusdatastore/piraeus-init:v0.5.1
         imagePullPolicy: Always
         resources:
           limits:
@@ -226,7 +226,7 @@ spec:
       dnsPolicy: ClusterFirst
       initContainers:
       - name: init
-        image: quay.io/piraeusdatastore/piraeus-init:v0.5
+        image: quay.io/piraeusdatastore/piraeus-init:v0.5.1
         imagePullPolicy: Always
         resources:
           limits:
@@ -346,7 +346,7 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       initContainers:
       - name: init
-        image: quay.io/piraeusdatastore/piraeus-init:v0.5
+        image: quay.io/piraeusdatastore/piraeus-init:v0.5.1
         imagePullPolicy: Always
         securityContext:
           privileged: true
@@ -382,7 +382,7 @@ spec:
         - name: lib-modules
           mountPath: /lib/modules
       containers:
-      - name: node
+      - name: satellite
         image: quay.io/piraeusdatastore/piraeus-server:v1.4.2
         imagePullPolicy: Always
         securityContext:
@@ -399,6 +399,10 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        - name: THIS_POD_UID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.uid
         - name: THIS_NODE_NAME
           valueFrom:
             fieldRef:
@@ -424,6 +428,8 @@ spec:
           mountPath: /init
         - name: log
           mountPath: /var/log/linstor-satellite
+        - name: opt-piraeus
+          mountPath: /opt/piraeus
         - name: var-local-piraeus
           mountPath: /var/local/piraeus
         - name: dev
@@ -442,12 +448,15 @@ spec:
         hostPath:
           path: /var/run/docker.sock
           type: Socket
-      - name: log
+      - name: opt-piraeus
         hostPath:
-          path: /var/log/piraeus/linstor-satellite
+          path: /opt/piraeus
       - name: var-local-piraeus
         hostPath:
           path: /var/local/piraeus
+      - name: log
+        hostPath:
+          path: /var/log/piraeus/linstor-satellite
       - name: dev
         hostPath:
           path: /dev

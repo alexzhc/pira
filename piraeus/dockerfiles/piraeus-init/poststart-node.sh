@@ -16,7 +16,7 @@ until [ "${NODE_HEALTH_COUNT}" -ge "${MIN_WAIT}" ];  do
         echo Timed Out !
         exit 1
     fi
-    echo "Wait for node \"${THIS_NODE_NAME}\" to come up"
+    echo "* Wait for node \"${THIS_NODE_NAME}\" to come up"
     if linstor_node_is_online ${THIS_NODE_NAME}; then
         echo '... this node is ONLINE'
         let 'NODE_HEALTH_COUNT+=1'
@@ -26,12 +26,27 @@ until [ "${NODE_HEALTH_COUNT}" -ge "${MIN_WAIT}" ];  do
     sleep 1
 done
 
+# set up local linstor cli by "docker exec"
+CLIENT_DIR="/opt/${THIS_POD_NAME/-*/}/client"
+echo "* Set up node linstor cli at ${CLIENT_DIR}/linstor"
+mkdir -p ${CLIENT_DIR}
+CONTAINER_ID=$( cat /proc/self/cgroup | grep :pids:/kubepods/pod${THIS_POD_UID} | awk -F/ '{print $NF}' )
+cat > ${CLIENT_DIR}/linstor << EOF
+docker exec -it ${CONTAINER_ID} linstor \$@
+EOF
+cat ${CLIENT_DIR}/linstor
+chmod +x ${CLIENT_DIR}/linstor
+
 # add to DfltStorPool by filethin backend
 POOL_NAME='DfltStorPool'
-mkdir -vp ${POOL_BASE_DIR}/${POOL_NAME}
+POOL_DIR="/var/local/${THIS_POD_NAME/-*/}/${POOL_NAME}"
 if ! linstor_has_storage_pool ${THIS_NODE_NAME} ${POOL_NAME}; then
-    echo "TASK: add storagepool \"${POOL_NAME}\" on node \"${THIS_NODE_NAME}\""
-    linstor storage-pool create filethin ${THIS_NODE_NAME} ${POOL_NAME} ${POOL_BASE_DIR}/${POOL_NAME}
+    echo "* Add storagepool \"${POOL_NAME}\" on node \"${THIS_NODE_NAME}\""
+    mkdir -vp ${POOL_DIR}
+    linstor storage-pool create filethin ${THIS_NODE_NAME} ${POOL_NAME} ${POOL_DIR}
 else
     echo "StoragePool \"${POOL_NAME}\" is already created on ${THIS_NODE_NAME}"
 fi
+
+# don't block pod readiness
+exit 0
