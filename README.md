@@ -42,12 +42,12 @@ kubectl apply -f https://raw.githubusercontent.com/piraeusdatastore/piraeus/mast
 ```
 
 This may take several minutes.
-Once the pods have started, the status of Piraeus can be checked with:
+Once the pods have started, the status of Piraeus can be checked by following commands.
 
 On each Kubernetes work node where piraeus is deployed:
 ```
 /opt/piraeus/client/linstor node list
-``` 
+```
 
 Also on Kuberntes master nodes:
 ```
@@ -57,7 +57,6 @@ kubectl -n kube-system exec -it \
 --field-selector status.phase=Running -o name )" \
 -- linstor node list
 ```
-
 
 This should show that the selected nodes are `Online` at the LINSTOR level.
 

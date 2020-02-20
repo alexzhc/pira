@@ -54,7 +54,7 @@ _linstor_node_list ${THIS_NODE_NAME}
 CONTAINER_ID="$( cat /proc/self/cgroup | grep :pids:/kubepods/pod${THIS_POD_UID} | awk -F/ '{print $NF}' )"
 THIS_IMG=$( _docker_ps | jq -r ".[] | select(.Id == \"${CONTAINER_ID}\") | .Image" )
 echo ${THIS_IMG}
-[[ "${THIS_IMG}" == "${THIS_IMG%/*}" ]] && THIS_IMG_REPO='' || THIS_IMG_REPO="${THIS_IMG%/*}/" 
+[[ "${THIS_IMG}" == "${THIS_IMG%/*}" ]] && THIS_IMG_REPO='' || THIS_IMG_REPO="${THIS_IMG%/*}/"
 echo ${THIS_IMG_REPO}
 
 # enable devicemapper thin-provisioning
@@ -100,10 +100,10 @@ echo "* Set up local api proxy"
 if [[ ! "${LS_CONTROLLERS/:*/}" =~ \.svc\.cluster\.local$ ]]; then
     if [[ "${LS_CONTROLLERS}" =~ :[0-9]+$ ]]; then
         export LS_CONTROLLERS="${LS_CONTROLLERS/:/.svc.cluster.local:}"
-    else 
+    else
         export LS_CONTROLLERS="${LS_CONTROLLERS/$/.svc.cluster.local}"
-    fi 
-fi 
+    fi
+fi
 sed -i "s/_CONTROLLER_FQDN_/${LS_CONTROLLERS}/" /init/etc/haproxy/haproxy.cfg
 
 # install linstor cli script
@@ -112,5 +112,4 @@ sed -i "s#quay.io/piraeusdatastore/#${THIS_IMG_REPO}#" /init/bin/linstor.sh
 CLI_DIR="/opt/${THIS_POD_NAME/-*/}/client"
 mkdir -vp ${CLI_DIR}
 cp -vf /init/bin/linstor.sh "${CLI_DIR}/linstor"
-[[ -f /usr/local/bin/linstor ]] || ln -s "${CLI_DIR}/linstor"  /usr/local/bin/linstor 
-
+[[ -f /usr/local/bin/linstor ]] || ln -s "${CLI_DIR}/linstor"  /usr/local/bin/linstor
