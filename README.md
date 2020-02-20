@@ -44,9 +44,20 @@ kubectl apply -f https://raw.githubusercontent.com/piraeusdatastore/piraeus/mast
 This may take several minutes.
 Once the pods have started, the status of Piraeus can be checked with:
 
+On each Kubernetes work node where piraeus is deployed:
 ```
-kubectl -n kube-system exec piraeus-controller-0 -- linstor node list
+/opt/piraeus/client/linstor node list
+``` 
+
+Also on Kuberntes master nodes:
 ```
+kubectl -n kube-system exec -it \
+"$( kubectl -n kube-system get pod \
+--selector app.kubernetes.io/component=piraeus-controller \
+--field-selector status.phase=Running -o name )" \
+-- linstor node list
+```
+
 
 This should show that the selected nodes are `Online` at the LINSTOR level.
 
@@ -70,15 +81,15 @@ On the nodes that should provide storage, backing devices must be available.
 Assuming the hosts have empty storage devices of at least 1GB capacity, they can be listed as follows:
 
 ```
-kubectl -n kube-system exec piraeus-controller-0 -- linstor physical-storage list
+linstor physical-storage list
 ```
 
 Piraeus can then configure LVM on these devices and create a storage pool.
 Use the following steps for each node:
 
 ```
-kubectl -n kube-system exec piraeus-controller-0 -- linstor physical-storage create-device-pool --pool-name pool0 LVM $NODE_NAME /dev/$DEVICE
-kubectl -n kube-system exec piraeus-controller-0 -- linstor storage-pool create lvm $NODE_NAME DfltStorPool pool0
+linstor physical-storage create-device-pool --pool-name pool0 LVM $NODE_NAME /dev/$DEVICE
+linstor storage-pool create lvm $NODE_NAME DfltStorPool pool0
 ```
 
 ## Components
