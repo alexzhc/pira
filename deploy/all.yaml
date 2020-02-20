@@ -213,7 +213,8 @@ spec:
       priorityClassName: system-node-critical
       restartPolicy: Always
       terminationGracePeriodSeconds: 0
-      dnsPolicy: ClusterFirst
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       initContainers:
       - name: init
         image: quay.io/piraeusdatastore/piraeus-init:v0.5.1
@@ -230,10 +231,6 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        - name: THIS_POD_IP
-          valueFrom:
-            fieldRef:
-              fieldPath: status.podIP
         volumeMounts:
         - name: localtime
           mountPath: /etc/localtime
@@ -250,13 +247,18 @@ spec:
         ports:
         - name: rest-api
           containerPort: 3370
-          hostPort: 13370
         - name: plain
           containerPort: 3376
         - name: ssl
           containerPort: 3377
+        env:
+        - name: THIS_POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
         args:
         - startController
+        - --rest-bind=$(THIS_POD_IP):3370
         readinessProbe:
           successThreshold: 3
           failureThreshold: 3
@@ -439,9 +441,6 @@ spec:
           limits:
             cpu: 200m
             memory: 200Mi
-        ports:
-        - name: rest-api
-          containerPort: 3370
         envFrom:
         - configMapRef:
             name: piraeus-node
@@ -449,6 +448,7 @@ spec:
           successThreshold: 3
           failureThreshold: 3
           httpGet:
+            host: 127.0.0.1
             port: 3370
           initialDelaySeconds: 1
           periodSeconds: 1
