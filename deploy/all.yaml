@@ -203,6 +203,8 @@ spec:
     matchLabels:
       app.kubernetes.io/name: piraeus
       app.kubernetes.io/component: piraeus-controller
+  strategy:
+    type: Recreate
   replicas: 1
   template:
     metadata:
