@@ -37,7 +37,6 @@ spec:
     spec:
       priorityClassName: system-node-critical
       restartPolicy: Always
-      terminationGracePeriodSeconds: 0
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       initContainers:

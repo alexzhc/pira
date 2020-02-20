@@ -68,7 +68,6 @@ spec:
     spec:
       priorityClassName: system-node-critical
       restartPolicy: Always
-      terminationGracePeriodSeconds: 0
       dnsPolicy: ClusterFirst
       initContainers:
       - name: init
