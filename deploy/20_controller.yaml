@@ -12,9 +12,7 @@ data:
   INIT_DEBUG: "false"
   MIN_WAIT: "5"
   MAX_WAIT: "3600"
-  LINSTOR_TOML: |-
-    [db]
-    connection_url = "etcd://http://piraeus-etcd.kube-system:2379"
+  ETCD_ENDPOINTS: piraeus-etcd.kube-system:2379
 ---
 apiVersion: v1
 kind: Service
@@ -35,7 +33,7 @@ spec:
     app.kubernetes.io/component: piraeus-controller
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: piraeus-controller
   namespace: kube-system
@@ -43,10 +41,6 @@ metadata:
     app.kubernetes.io/name: piraeus
     app.kubernetes.io/component: piraeus-controller
 spec:
-  serviceName: piraeus-controller
-  podManagementPolicy: Parallel
-  updateStrategy:
-    type: RollingUpdate
   selector:
     matchLabels:
       app.kubernetes.io/name: piraeus
@@ -64,7 +58,7 @@ spec:
       dnsPolicy: ClusterFirst
       initContainers:
       - name: init
-        image: quay.io/piraeusdatastore/piraeus-init:v0.5
+        image: quay.io/piraeusdatastore/piraeus-init:v0.5.1
         imagePullPolicy: Always
         resources:
           limits:
@@ -78,11 +72,15 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        - name: THIS_POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
         volumeMounts:
         - name: localtime
           mountPath: /etc/localtime
-        - name: etc-linstor
-          mountPath: /etc/linstor
+        - name: init
+          mountPath: /init
       containers:
       - name: controller
         image: quay.io/piraeusdatastore/piraeus-server:v1.4.2
@@ -94,13 +92,11 @@ spec:
         ports:
         - name: rest-api
           containerPort: 3370
-          hostPort: 3370
+          hostPort: 13370
         - name: plain
           containerPort: 3376
-          hostPort: 3376
         - name: ssl
           containerPort: 3377
-          hostPort: 3377
         args:
         - startController
         readinessProbe:
@@ -113,20 +109,17 @@ spec:
         volumeMounts:
         - name: localtime
           mountPath: /etc/localtime
-        - name: etc-linstor
+        - name: init
           mountPath: /etc/linstor
+          subPath: etc/linstor
         - name: log
           mountPath: /var/log/linstor-controller
       volumes:
       - name: localtime
         hostPath:
           path: /etc/localtime
-      - name: etc-linstor
-        configMap:
-          name: piraeus-controller
-          items:
-          - key: LINSTOR_TOML
-            path: linstor.toml
+      - name: init
+        emptyDir: {}
       - name: log
         hostPath:
           path: /var/log/piraeus/linstor-controller
@@ -135,6 +128,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
+              - key: piraeus/enabled
+                operator: In
+                values:
+                - "true"
               - key: node-role.kubernetes.io/master
                 operator: DoesNotExist
       tolerations:
