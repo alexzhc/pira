@@ -105,7 +105,6 @@ if [[ ! "${LS_CONTROLLERS/:*/}" =~ \.svc\.cluster\.local$ ]]; then
     fi
 fi
 sed -i "s/_CONTROLLER_FQDN_/${LS_CONTROLLERS}/" /init/etc/haproxy/haproxy.cfg
-sed -i "s/_IP_/127.0.0.1/" /init/etc/haproxy/haproxy.cfg
 
 # install linstor cli script
 echo "* Install local linstor cli"
