@@ -41,7 +41,10 @@ Install as follows:
 kubectl apply -f https://raw.githubusercontent.com/piraeusdatastore/piraeus/master/deploy/all.yaml
 ```
 
-This may take several minutes.
+This may take several minutes. You may observe the pods by command: 
+```
+kubectl -n kube-system get pod -l app.kubernetes.io/name=piraeus
+```
 Once the pods have started, the status of Piraeus can be checked by following commands.
 
 On each Kubernetes work node where piraeus is deployed:
@@ -53,7 +56,7 @@ Also on Kuberntes master nodes:
 ```
 kubectl -n kube-system exec -it \
 "$( kubectl -n kube-system get pod \
---selector app.kubernetes.io/component=piraeus-controller \
+-l app.kubernetes.io/component=piraeus-controller \
 --field-selector status.phase=Running -o name )" \
 -- linstor node list
 ```
