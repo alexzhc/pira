@@ -393,7 +393,7 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: #@ name() + "/enabled"
+              - key: #@ name() + "/node"
                 operator: In
                 values:
                 - "true"

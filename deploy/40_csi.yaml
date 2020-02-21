@@ -430,7 +430,7 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
             - matchExpressions:
-              - key: piraeus/enabled
+              - key: piraeus/node
                 operator: In
                 values:
                 - "true"
